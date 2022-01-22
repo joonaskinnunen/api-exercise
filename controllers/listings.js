@@ -12,14 +12,17 @@ const getTokenFrom = request => {
 }
 
 listingRouter.get('/', async (request, response) => {
-  const bookings = await Listing.find({}).populate('user')
-  response.json(notes.map(note => note.toJSON()))
+  const listings = await Listing.find({}).populate('user')
+  response.json(listings.map(listing => listing.toJSON()))
 })
 
 listingRouter.post('/', async (request, response) => {
   const body = request.body
 
   const token = getTokenFrom(request)
+  if (token == null) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
   const decodedToken = jwt.verify(token, process.env.SECRET)
   if (!token || !decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
@@ -27,8 +30,15 @@ listingRouter.post('/', async (request, response) => {
   const user = await User.findById(decodedToken.id)
 
   const listing = new Listing({
-    dates: body.dates,
-    user: user._id
+    title: body.title,
+    description: body.description,
+    category: body.category,
+    location: body.location,
+    images: body.images,
+    price: body.price,
+    date: Date.now(),
+    deliverytype: body.deliverytype,
+    user: user.id
   })
 
   const savedListing = await listing.save()

@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 app.use(cors())
 app.use(express.json())
 app.use('/api/users', usersRouter)
-app.use('/api/listing', listingRouter)
+app.use('/api/listings', listingRouter)
 app.use('/api/login', loginRouter)
 
 module.exports = app

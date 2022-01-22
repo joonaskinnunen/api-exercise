@@ -17,7 +17,8 @@ const listingSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    images: {
+    images: [],
+/*    images: {
         type: Array,
         minlength: 1,
         maxlength: 4,
@@ -35,6 +36,17 @@ const listingSchema = new mongoose.Schema({
         type: String,
         enum: ['shipping', 'pickup'],
         required : true 
+    }, */
+    price: {
+        type: Number,
+        require: true,     
+    },
+    date: {
+        type: Date
+    },
+    deliverytype: {
+        type: String,
+        enum: ['shipping, pickup']
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -50,4 +62,4 @@ const listingSchema = new mongoose.Schema({
     }
   })
   
-  module.exports = mongoose.model('listing', listingSchema, "data")
+  module.exports = mongoose.model('Listing', listingSchema)
