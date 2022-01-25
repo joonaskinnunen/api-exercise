@@ -12,7 +12,7 @@ const getTokenFrom = request => {
 }
 
 listingRouter.get('/', async (request, response) => {
-  const listings = await Listing.find({}).populate('user')
+  const listings = await Listing.find({}).populate('user', ['name', 'phone', 'email'])
   response.json(listings.map(listing => listing.toJSON()))
 })
 
@@ -56,26 +56,29 @@ listingRouter.get('/:id', async (request, response) => {
   }
 })
 
-listingRouter.delete('/:id', async (req, res, next) => {
-  const id = req.params.id
+listingRouter.delete('/:id', async (request, response) => {
+  const id = request.params.id
   try {
     const listingToDelete = await Listing.findById(id)
-    const token = getTokenFrom(req)
+    const token = getTokenFrom(request)
+    if (token == null) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
     const decodedToken = jwt.verify(token, process.env.SECRET)
     if (!listingToDelete) {
-      return res.status(400).json({ error: 'no poll found with the id ' + id })
+      return response.status(400).json({ error: 'no listing found with the id ' + id })
     }
     if (!decodedToken.id) {
-      return res.status(401).json({ error: 'missing or invalid token' })
+      return response.status(401).json({ error: 'missing or invalid token' })
     } else if (listingToDelete.user.toString() !== decodedToken.id) {
-      return res.status(401).json({ error: `not authorized decodedToken: ${decodedToken}, polltodeleteuser: ${pollToDelete.user.id.toString()}` })
+      return response.status(401).json({ error: 'not authorized' })
     } else {
       const deletedListing = await Listing.findByIdAndRemove(id)
-      res.json(deletedListing.toJSON())
+      response.json(deletedListing.toJSON())
     }
 
   } catch (exception) {
-    next(exception)
+    return response.status(400).json({ error: 'bad request' })
   }
 })
 
