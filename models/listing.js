@@ -17,13 +17,10 @@ const listingSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    images: [],
-/*    images: {
+    images: {
         type: Array,
-        minlength: 1,
-        maxlength: 4,
-        require: true
-    },
+        maxlength: 4
+    }, /*
     price: {
         type: Number,
         require: true
@@ -42,11 +39,11 @@ const listingSchema = new mongoose.Schema({
         require: true,     
     },
     date: {
-        type: Date
+        type: String
     },
     deliverytype: {
         type: String,
-        enum: ['shipping, pickup']
+        require: true
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

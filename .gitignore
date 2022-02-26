@@ -1,0 +1,6 @@
+.env
+node_modules
+deleteListing.REST
+newListing.REST
+newUser.REST
+updateListing.REST
