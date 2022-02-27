@@ -1,0 +1,1 @@
+API documentation: [https://joonas.stoplight.io/docs/sell-buy/YXBpOjc4MTA4MA-api](https://joonas.stoplight.io/docs/sell-buy/YXBpOjc4MTA4MA-api)
