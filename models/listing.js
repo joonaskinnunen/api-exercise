@@ -20,20 +20,7 @@ const listingSchema = new mongoose.Schema({
     images: {
         type: Array,
         maxlength: 4
-    }, /*
-    price: {
-        type: Number,
-        require: true
     },
-    date: {
-        type: Date,
-        default: Date.now()
-    },
-    deliveryType: {
-        type: String,
-        enum: ['shipping', 'pickup'],
-        required : true 
-    }, */
     price: {
         type: Number,
         require: true,     
@@ -43,6 +30,7 @@ const listingSchema = new mongoose.Schema({
     },
     deliverytype: {
         type: String,
+        enum: ['shipping', 'pickup'],
         require: true
     },
     user: {

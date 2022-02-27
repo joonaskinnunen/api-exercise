@@ -4,3 +4,4 @@ deleteListing.REST
 newListing.REST
 newUser.REST
 updateListing.REST
+login.REST

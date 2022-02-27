@@ -19,11 +19,23 @@ listingRouter.get('/', async (request, response) => {
 listingRouter.post('/', async (request, response) => {
   const body = request.body
 
+  if(!body.title || !body.description || !body.category|| !body.location || !body.price|| !body.deliverytype) {
+    return response.status(400).json({
+      error: 'required information missing'
+    })
+  }
+
   const token = getTokenFrom(request)
   if (token == null) {
-    return response.status(401).json({ error: 'token missing or invalid' })
+    return response.status(401).json({ error: 'token missing' })
   }
-  const decodedToken = jwt.verify(token, process.env.SECRET)
+
+  let decodedToken = ""
+  try {
+    decodedToken = jwt.verify(token, process.env.SECRET)
+  } catch {
+    return response.status(401).json({ error: 'token invalid' })
+  }
   if (!token || !decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
@@ -42,10 +54,24 @@ listingRouter.post('/', async (request, response) => {
     user: user.id
   })
 
-  const savedListing = await listing.save()
-  user.listings = user.listings.concat(savedListing._id)
-  await user.save()
-  response.json(savedListing.toJSON())
+  try {
+    const savedListing = await listing.save()
+    user.listings = user.listings.concat(savedListing._id)
+    await user.save()
+    response.json(savedListing.toJSON())
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      let errors = {};
+
+      Object.keys(error.errors).forEach((key) => {
+        errors[key] = error.errors[key].message;
+      });
+
+      return response.status(400).send(errors);
+    }
+    response.status(500).send("Something went wrong");
+  }
+  
 })
 
 listingRouter.get('/:id', async (request, response) => {
@@ -91,7 +117,6 @@ listingRouter.put('/:id', async (request, response) => {
   const body = request.body
   try {
     const listingToUpdate = await Listing.findById(id)
-    console.log(listingToUpdate)
     if (!listingToUpdate) {
       return response.status(400).json({ error: 'no listing found with the id ' + id })
     }
@@ -126,11 +151,7 @@ listingRouter.put('/:id', async (request, response) => {
       if(body.deliverytype) {
         listingToUpdate.deliverytype = body.deliverytype
       }
-      console.log("listingToUpdate: ")
-      console.log(listingToUpdate)
-      console.log("savedListing: ")
       const savedListing = await listingToUpdate.save()
-      console.log(savedListing)
       response.json(savedListing.toJSON())
 
     }
