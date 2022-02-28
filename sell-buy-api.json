@@ -38,7 +38,7 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "usename": {
+                                    "username": {
                                         "type": "string",
                                         "example": "someuser"
                                     },
@@ -60,7 +60,7 @@
                                     }
                                 },
                                 "required": [
-                                    "usename",
+                                    "username",
                                     "name",
                                     "password",
                                     "phone",
@@ -70,7 +70,7 @@
                             "examples": {
                                 "example-1": {
                                     "value": {
-                                        "usename": "someuser",
+                                        "username": "someuser",
                                         "name": "Matti Meikäläinen",
                                         "password": "password12345",
                                         "phone": "040545445454",
@@ -147,27 +147,13 @@
                                                 "price": 0,
                                                 "date": "string",
                                                 "user": {
+                                                    "username": "string",
                                                     "name": "string",
                                                     "phone": "string",
                                                     "email": "string",
-                                                    "id": "string"
-                                                },
-                                                "id": "string"
-                                            },
-                                            {
-                                                "title": "string",
-                                                "description": "string",
-                                                "category": "string",
-                                                "location": "string",
-                                                "images": [
-                                                    "string"
-                                                ],
-                                                "price": 0,
-                                                "date": "string",
-                                                "user": {
-                                                    "name": "string",
-                                                    "phone": "string",
-                                                    "email": "string",
+                                                    "listings": [
+                                                        {}
+                                                    ],
                                                     "id": "string"
                                                 },
                                                 "id": "string"
@@ -272,16 +258,14 @@
                                         "deliverytype": {
                                             "type": "string",
                                             "example": "shipping"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "id": {
+                                            "type": "string"
                                         }
-                                    },
-                                    "required": [
-                                        "title",
-                                        "description",
-                                        "category",
-                                        "location",
-                                        "price",
-                                        "deliverytype"
-                                    ]
+                                    }
                                 },
                                 "examples": {
                                     "example-1": {
@@ -291,11 +275,21 @@
                                             "category": "toys",
                                             "location": "new york",
                                             "images": [
-                                                "https://somedomain.com/image.jpg",
-                                                "https://otherdomain.com/otherimage.png"
+                                                "[\"https://somedomain.com/image.jpg\", \"https://otherdomain.com/otherimage.png\"]"
                                             ],
                                             "price": 22,
-                                            "deliverytype": "shipping"
+                                            "deliverytype": "shipping",
+                                            "user": {
+                                                "username": "string",
+                                                "name": "string",
+                                                "phone": "string",
+                                                "email": "string",
+                                                "listings": [
+                                                    {}
+                                                ],
+                                                "id": "string"
+                                            },
+                                            "id": "string"
                                         }
                                     }
                                 }
@@ -322,7 +316,65 @@
                         "description": "Bearer Auth"
                     }
                 ],
-                "description": "Post new listing. You must provide authorization token in header."
+                "description": "Post new listing. You must provide authorization token in header.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "category": {
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "price": {
+                                        "type": "number"
+                                    },
+                                    "deliverytype": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "category",
+                                    "location",
+                                    "price",
+                                    "deliverytype"
+                                ]
+                            },
+                            "examples": {
+                                "example-1": {
+                                    "value": {
+                                        "title": "string",
+                                        "description": "string",
+                                        "category": "string",
+                                        "location": "string",
+                                        "images": [
+                                            "string"
+                                        ],
+                                        "price": 0,
+                                        "deliverytype": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/listings/{listingID}": {
@@ -399,8 +451,7 @@
                                             "category": "toys",
                                             "location": "Oulu",
                                             "images": [
-                                                "http://somedomain.com/image.jpeg",
-                                                "http://otherdomain.com/otherimage.png"
+                                                "[\"http://somedomain.com/image.jpeg\", http://otherdomain.com/otherimage.png\"]"
                                             ],
                                             "price": 33,
                                             "date": "28022022",
@@ -456,13 +507,39 @@
                                             "type": "string"
                                         },
                                         "images": {
-                                            "type": "string"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
                                         },
                                         "price": {
-                                            "type": "string"
+                                            "type": "number"
                                         },
                                         "deliverytype": {
                                             "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": ""
+                                        },
+                                        "id": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example-1": {
+                                        "value": {
+                                            "title": "string",
+                                            "description": "string",
+                                            "category": "string",
+                                            "location": "string",
+                                            "images": [
+                                                "string"
+                                            ],
+                                            "price": 0,
+                                            "deliverytype": "string",
+                                            "user": null,
+                                            "id": "string"
                                         }
                                     }
                                 }
@@ -488,7 +565,57 @@
                         "required": true
                     }
                 ],
-                "description": "Provide bearer token in the Authorization header.\nAll body fields are optional. Only provided fiels will be updated."
+                "description": "Provide bearer token in the Authorization header.\nAll body fields are optional. Only provided fiels will be updated.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "category": {
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "price": {
+                                        "type": "number"
+                                    },
+                                    "deliverytype": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "example-1": {
+                                    "value": {
+                                        "title": "string",
+                                        "description": "string",
+                                        "category": "string",
+                                        "location": "string",
+                                        "images": [
+                                            "string"
+                                        ],
+                                        "price": 0,
+                                        "deliverytype": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             },
             "delete": {
                 "summary": "",
@@ -529,10 +656,37 @@
                                             "type": "string"
                                         },
                                         "user": {
-                                            "type": "string"
+                                            "$ref": "#/components/schemas/User"
                                         },
                                         "id": {
                                             "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example-1": {
+                                        "value": {
+                                            "title": "string",
+                                            "description": "string",
+                                            "category": "string",
+                                            "location": "string",
+                                            "images": [
+                                                "string"
+                                            ],
+                                            "price": 0,
+                                            "date": "string",
+                                            "deliverytype": "string",
+                                            "user": {
+                                                "username": "string",
+                                                "name": "string",
+                                                "phone": "string",
+                                                "email": "string",
+                                                "listings": [
+                                                    {}
+                                                ],
+                                                "id": "string"
+                                            },
+                                            "id": "string"
                                         }
                                     }
                                 }
@@ -612,7 +766,7 @@
                                                 }
                                             },
                                             "price": {
-                                                "type": "string",
+                                                "type": "number",
                                                 "example": "22"
                                             },
                                             "date": {
@@ -637,34 +791,18 @@
                                                 "category": "toys",
                                                 "location": "Oulu",
                                                 "images": [
-                                                    "https://domain.com/image.jpg",
-                                                    "https://otherdomain.com/otherimage.jpeg"
+                                                    "[\"https://domain.com/image.jpg\", https://otherdomain.com/otherimage.jpeg\"]"
                                                 ],
                                                 "price": "22",
                                                 "date": "28022022",
                                                 "user": {
+                                                    "username": "string",
                                                     "name": "string",
                                                     "phone": "string",
                                                     "email": "string",
-                                                    "id": "string"
-                                                },
-                                                "id": "string"
-                                            },
-                                            {
-                                                "title": "Toy car",
-                                                "desctiption": "Great toy car",
-                                                "category": "toys",
-                                                "location": "Oulu",
-                                                "images": [
-                                                    "https://domain.com/image.jpg",
-                                                    "https://otherdomain.com/otherimage.jpeg"
-                                                ],
-                                                "price": "22",
-                                                "date": "28022022",
-                                                "user": {
-                                                    "name": "string",
-                                                    "phone": "string",
-                                                    "email": "string",
+                                                    "listings": [
+                                                        {}
+                                                    ],
                                                     "id": "string"
                                                 },
                                                 "id": "string"
@@ -728,8 +866,8 @@
                                                 }
                                             },
                                             "price": {
-                                                "type": "string",
-                                                "example": "22"
+                                                "example": "22",
+                                                "type": "number"
                                             },
                                             "date": {
                                                 "type": "string",
@@ -753,34 +891,18 @@
                                                 "category": "toys",
                                                 "location": "Oulu",
                                                 "images": [
-                                                    "https://domain.com/image.jpg",
-                                                    "https://otherdomain.com/otherimage.jpeg"
+                                                    "[\"https://domain.com/image.jpg\", https://otherdomain.com/otherimage.jpeg\"]"
                                                 ],
                                                 "price": "22",
                                                 "date": "28022022",
                                                 "user": {
+                                                    "username": "string",
                                                     "name": "string",
                                                     "phone": "string",
                                                     "email": "string",
-                                                    "id": "string"
-                                                },
-                                                "id": "string"
-                                            },
-                                            {
-                                                "title": "Toy car",
-                                                "desctiption": "Great toy car",
-                                                "category": "toys",
-                                                "location": "Oulu",
-                                                "images": [
-                                                    "https://domain.com/image.jpg",
-                                                    "https://otherdomain.com/otherimage.jpeg"
-                                                ],
-                                                "price": "22",
-                                                "date": "28022022",
-                                                "user": {
-                                                    "name": "string",
-                                                    "phone": "string",
-                                                    "email": "string",
+                                                    "listings": [
+                                                        {}
+                                                    ],
                                                     "id": "string"
                                                 },
                                                 "id": "string"
@@ -844,7 +966,7 @@
                                                 }
                                             },
                                             "price": {
-                                                "type": "string",
+                                                "type": "number",
                                                 "example": "22"
                                             },
                                             "date": {
@@ -869,34 +991,18 @@
                                                 "category": "toys",
                                                 "location": "Oulu",
                                                 "images": [
-                                                    "https://domain.com/image.jpg",
-                                                    "https://otherdomain.com/otherimage.jpeg"
+                                                    "[\"https://domain.com/image.jpg\", https://otherdomain.com/otherimage.jpeg\"]"
                                                 ],
                                                 "price": "22",
                                                 "date": "28022022",
                                                 "user": {
+                                                    "username": "string",
                                                     "name": "string",
                                                     "phone": "string",
                                                     "email": "string",
-                                                    "id": "string"
-                                                },
-                                                "id": "string"
-                                            },
-                                            {
-                                                "title": "Toy car",
-                                                "desctiption": "Great toy car",
-                                                "category": "toys",
-                                                "location": "Oulu",
-                                                "images": [
-                                                    "https://domain.com/image.jpg",
-                                                    "https://otherdomain.com/otherimage.jpeg"
-                                                ],
-                                                "price": "22",
-                                                "date": "28022022",
-                                                "user": {
-                                                    "name": "string",
-                                                    "phone": "string",
-                                                    "email": "string",
+                                                    "listings": [
+                                                        {}
+                                                    ],
                                                     "id": "string"
                                                 },
                                                 "id": "string"
@@ -937,6 +1043,15 @@
                                             "example": "Teppo Testaaja"
                                         }
                                     }
+                                },
+                                "examples": {
+                                    "example-1": {
+                                        "value": {
+                                            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZS",
+                                            "username": "kayttaja123",
+                                            "name": "Teppo Testaaja"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -975,6 +1090,14 @@
                                     "username",
                                     "password"
                                 ]
+                            },
+                            "examples": {
+                                "example-1": {
+                                    "value": {
+                                        "username": "kayttaja123",
+                                        "password": "salasana123"
+                                    }
+                                }
                             }
                         }
                     }
