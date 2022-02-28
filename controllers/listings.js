@@ -102,7 +102,6 @@ listingRouter.get('/location/:location', async (request, response) => {
 })
 
 listingRouter.get('/date/:date', async (request, response) => {
-  console.log(request.params.date)
   const listings = await Listing.find({date: request.params.date}).populate('user', ['name', 'phone', 'email'])
 
   if (listings) {
